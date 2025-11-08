@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proekt.top - Главная</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #ffeb3b;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Шапка */
+        .header {
+            background-color: #111;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ffeb3b;
+            box-shadow: 0 2px 10px rgba(255, 235, 59, 0.2);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+            cursor: pointer;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .auth-buttons button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons button:hover {
+            background-color: #ffd600;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 235, 59, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-role {
+            background-color: #333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* Навигация */
+        .nav-back {
+            background-color: #111;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #333;
+            display: none;
+        }
+
+        .nav-back button {
+            background-color: transparent;
+            color: #ffeb3b;
+            border: 1px solid #ffeb3b;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-back button:hover {
+            background-color: #ffeb3b;
+            color: #000;
+        }
+
+        /* Контент страниц */
+        .page {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Сетка квадратов */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .grid-item {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 2rem;
+            text-decoration: none;
+            color: #ffeb3b;
+            display: block;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffeb3b, #000);
+        }
+
+        .grid-item:hover {
+            background-color: #ffeb3b;
+            color: #000;
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 16px rgba(255, 235, 59, 0.3);
+        }
+
+        .item-content {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .item-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .item-content p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Стили для календаря */
+        .calendar-container {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-navigation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .calendar-navigation button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .calendar-theme-toggle {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            background-color: #222;
+            border: 1px solid #333;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day:hover {
+            background-color: #ffeb3b;
+            color: #000;
+        }
+
+        .calendar-day.has-event {
+            background-color: #333;
+            border-color: #ffeb3b;
+        }
+
+        .calendar-day-header {
+            background-color: #333;
+            font-weight: bold;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .calendar-actions {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .create-event-btn {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .create-event-btn:hover {
+            background-color: #ffd600;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 235, 59, 0.3);
+        }
+
+        /* Стили для проектной доски */
+        .project-board {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .status-column {
+            background-color: #111;
+            border: 1px solid #ffeb3b;
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 280px;
+            flex-shrink: 0;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .task {
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: move;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .task.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .task:hover {
+            border-color: #ffeb3b;
+        }
+
+        .task-date {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        .add-task-btn {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        /* Стили для чата */
+        .chat-container {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 1rem;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #000;
+            border-radius: 8px;
+        }
+
+        .message {
+            background-color: #222;
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #ffeb3b;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+            opacity: 0.7;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.8rem;
+            background-color: #111;
+            border: 1px solid #ffeb3b;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .chat-input button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Стили для кабинета хоста */
+        .host-controls {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-section {
+            margin-bottom: 2rem;
+        }
+
+        .control-section h3 {
+            margin-bottom: 1rem;
+            color: #ffeb3b;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .user-card {
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info-line {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .user-actions button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .role-select {
+            background-color: #333;
+            color: #ffeb3b;
+            border: 1px solid #ffeb3b;
+            padding: 0.3rem;
+            border-radius: 4px;
+        }
+
+        /* Модальное окно приглашения */
+        .invite-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .invite-modal-content {
+            background-color: #000;
+            margin: 15% auto;
+            padding: 2rem;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        /* Стили для выбора роли */
+        .role-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .role-option {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-option:hover {
+            background-color: #222;
+            border-color: #ffeb3b;
+        }
+
+        .role-option.selected {
+            background-color: #1a1a1a;
+            border-color: #ffeb3b;
+            box-shadow: 0 0 5px rgba(255, 235, 59, 0.3);
+        }
+
+        .role-radio {
+            margin-right: 0.8rem;
+            accent-color: #ffeb3b;
+        }
+
+        .role-info {
+            flex: 1;
+        }
+
+        .role-name {
+            font-weight: bold;
+            color: #ffeb3b;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #000;
+            margin: 10% auto;
+            padding: 2rem;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: #ffeb3b;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #ffeb3b;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ffeb3b;
+        }
+
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #111;
+            border: 1px solid #ffeb3b;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .modal-content input:focus, .modal-content select:focus, .modal-content textarea:focus {
+            outline: none;
+            border-color: #ffd600;
+            box-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #ffd600;
+        }
+
+        .message {
+            margin-top: 1rem;
+            text-align: center;
+            min-height: 1.5rem;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .switch-form a {
+            color: #ffeb3b;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .page {
+                padding: 1rem;
+            }
+            
+            .grid-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+            
+            .grid-item {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Верхняя панель с названием и кнопками авторизации -->
+    <header class="header">
+        <div class="logo" onclick="showPage('home')">Proekt.top</div>
+        <div class="auth-section" id="authSection">
+            <div class="auth-buttons">
+                <button onclick="openRegisterModal()">Зарегистрироваться</button>
+                <button onclick="openLoginModal()">Войти</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Навигация назад -->
+    <div class="nav-back" id="navBack">
+        <button onclick="showPage('home')">← Назад на главную</button>
+    </div>
+
+    <!-- Главная страница -->
+    <div id="home-page" class="page active">
+        <div class="grid-container">
+            <!-- Квадрат 1: Календарь -->
+            <div class="grid-item" onclick="showPage('calendar')">
+                <div class="item-content">
+                    <h3>📅 Календарь</h3>
+                    <p>Планируйте задачи и события</p>
+                </div>
+            </div>
+
+            <!-- Квадрат 2: Кабинет хоста (изначально скрыт) -->
+            <div class="grid-item host-only" id="hostCabinetLink" style="display: none;" onclick="showPage('host-cabinet')">
+                <div class="item-content">
+                    <h3>👑 Кабинет Хоста</h3>
+                    <p>Управление ролями и проектом</p>
+                </div>
+            </div>
+
+            <!-- Квадрат 3: Проектная доска -->
+            <div class="grid-item" onclick="showPage('project-board')">
+                <div class="item-content">
+                    <h3>📋 Проектный План</h3>
+                    <p>Доска задач и статусов</p>
+                </div>
+            </div>
+
+            <!-- Квадрат 4: Чат -->
+            <div class="grid-item" onclick="showPage('chat')">
+                <div class="item-content">
+                    <h3>💬 Связь</h3>
+                    <p>Общение команды</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница календаря -->
+    <div id="calendar-page" class="page">
+        <div class="page-header">
+            <h1>📅 Календарь</h1>
+            <p>Планируйте задачи и события</p>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <div class="calendar-navigation">
+                    <button onclick="changeMonth(-1)">← Предыдущий</button>
+                    <h2 id="currentMonth">Март 2024</h2>
+                    <button onclick="changeMonth(1)">Следующий →</button>
+                </div>
+                <button class="calendar-theme-toggle" onclick="toggleCalendarTheme()">Переключить на черно-белый</button>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Календарь будет генерироваться динамически -->
+            </div>
+            
+            <div class="calendar-actions">
+                <button class="create-event-btn" onclick="openCreateEventModal()">+ Создать событие</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница проектной доски -->
+    <div id="project-board-page" class="page">
+        <div class="page-header">
+            <h1>📋 Проектный План</h1>
+            <p>Доска задач и статусов</p>
+        </div>
+        
+        <div class="project-board" id="projectBoard">
+            <!-- Столбцы будут добавляться хостом -->
+        </div>
+        
+        <button class="add-task-btn" onclick="openTaskModal()">+ Добавить задачу</button>
+    </div>
+
+    <!-- Страница чата -->
+    <div id="chat-page" class="page">
+        <div class="page-header">
+            <h1>💬 Связь</h1>
+            <p>Общение команды</p>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <!-- Сообщения будут добавляться динамически -->
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Введите сообщение...">
+                <button onclick="sendMessage()">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница кабинета хоста -->
+    <div id="host-cabinet-page" class="page">
+        <div class="page-header">
+            <h1>👑 Кабинет Хоста</h1>
+            <p>Управление ролями и проектом</p>
+        </div>
+        
+        <div class="host-controls">
+            <div class="control-section">
+                <h3>Управление пользователями</h3>
+                <div class="user-list" id="userList">
+                    <!-- Список пользователей будет генерироваться динамически -->
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>Управление статусами задач</h3>
+                <button onclick="openCreateStatusModal()">+ Создать новый статус</button>
+                <div id="statusList" style="margin-top: 1rem;">
+                    <!-- Список статусов будет генерироваться динамически -->
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>Ссылка для приглашения</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="inviteLink" readonly style="flex: 1;">
+                    <button onclick="copyInviteLink()">Копировать</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Вход в Proekt.top</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" placeholder="Почта" required id="loginEmail">
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Пароль" required id="loginPassword">
+                </div>
+                <button type="submit">Войти</button>
+            </form>
+            <div class="switch-form">
+                <p>Нет аккаунта? <a onclick="switchToRegister()">Зарегистрироваться</a></p>
+            </div>
+            <p id="loginMessage" class="message"></p>
+        </div>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Регистрация в Proekt.top</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Имя" required id="regName">
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Почта" required id="regEmail">
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Пароль" required id="regPassword">
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Подтвердите пароль" required id="regConfirmPassword">
+                </div>
+                <div class="form-group">
+                    <label>Выберите роль:</label>
+                    <div class="role-selection" id="roleSelection">
+                        <div class="role-option" onclick="selectRole('member')">
+                            <input type="radio" name="role" value="member" class="role-radio" id="roleMember">
+                            <div class="role-info">
+                                <div class="role-name">Участник</div>
+                            </div>
+                        </div>
+                        <div class="role-option" onclick="selectRole('host')">
+                            <input type="radio" name="role" value="host" class="role-radio" id="roleHost">
+                            <div class="role-info">
+                                <div class="role-name">Хост</div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="regRole" value="member">
+                </div>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            <div class="switch-form">
+                <p>Уже есть аккаунт? <a onclick="switchToLogin()">Войти</a></p>
+            </div>
+            <p id="registerMessage" class="message"></p>
+        </div>
+    </div>
+
+    <!-- Модальное окно создания события -->
+    <div id="createEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateEventModal()">&times;</span>
+            <h2>Создать событие</h2>
+            <form id="createEventForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Название события" required id="eventTitle">
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Описание события" rows="3" id="eventDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <input type="time" id="eventTime" required>
+                </div>
+                <button type="submit">Создать событие</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно задачи -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTaskModal()">&times;</span>
+            <h2>Новая задача</h2>
+            <form id="taskForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Название задачи" required id="taskTitle">
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Описание задачи" rows="3" id="taskDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <select id="taskStatus">
+                        <!-- Статусы будут загружаться динамически -->
+                    </select>
+                </div>
+                <button type="submit">Создать задачу</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно создания статуса -->
+    <div id="createStatusModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateStatusModal()">&times;</span>
+            <h2>Создать статус</h2>
+            <form id="createStatusForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Название статуса" required id="statusName">
+                </div>
+                <div class="form-group">
+                    <input type="color" value="#ffeb3b" id="statusColor">
+                </div>
+                <button type="submit">Создать статус</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно события -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEventModal()">&times;</span>
+            <h2>Событие календаря</h2>
+            <div id="eventDetails">
+                <!-- Детали события будут загружены здесь -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно приглашения -->
+    <div id="inviteModal" class="invite-modal">
+        <div class="invite-modal-content">
+            <span class="close" onclick="closeInviteModal()">&times;</span>
+            <h2>Присоединиться к проекту</h2>
+            <p>Введите код приглашения:</p>
+            <div style="display: flex; gap: 0.5rem; margin: 1rem 0;">
+                <input type="text" id="inviteCodeInput" placeholder="Код приглашения" style="flex: 1;">
+                <button onclick="joinProjectByCode()">Присоединиться</button>
+            </div>
+            <p id="inviteMessage" class="message"></p>
+        </div>
+    </div>
+
+    <script>
+        // Глобальная система проектов
+        let projects = JSON.parse(localStorage.getItem('proekt_top_projects')) || {};
+        let currentProjectId = localStorage.getItem('proekt_top_currentProjectId');
+        let currentUser = null;
+        let calendarColorMode = 'color';
+        let currentDate = new Date();
+
+        // Автоматическое присоединение к проекту по ссылке при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            selectRole('member');
+            updateUIForUser();
+            
+            // Проверка пригласительной ссылки в URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const inviteCode = urlParams.get('invite');
+            
+            if (inviteCode) {
+                // Автоматически присоединяемся к проекту по коду из URL
+                joinProjectByCodeFromUrl(inviteCode);
+            } else if (currentProjectId) {
+                // Уже есть проект, обновляем данные
+                updateCalendar();
+                updateChat();
+                updateInviteLink();
+            } else {
+                // Нет проекта, показываем сообщение
+                setTimeout(() => {
+                    showNoProjectMessage();
+                }, 1000);
+            }
+        });
+
+        // Функция присоединения к проекту по коду из URL
+        function joinProjectByCodeFromUrl(code) {
+            const projectEntry = Object.entries(projects).find(([id, project]) => project.inviteCode === code);
+            
+            if (projectEntry) {
+                const [projectId, project] = projectEntry;
+                currentProjectId = projectId;
+                saveData();
+                
+                // Обновляем интерфейс
+                updateUIForUser();
+                updateCalendar();
+                updateChat();
+                updateInviteLink();
+                
+                // Убираем параметр invite из URL чтобы при обновлении страницы не присоединяться повторно
+                const newUrl = window.location.href.split('?')[0];
+                window.history.replaceState({}, document.title, newUrl);
+                
+            } else {
+                alert('Проект с таким кодом не найден. Попросите хоста отправить актуальную ссылку.');
+                showNoProjectMessage();
+            }
+        }
+
+        // Функция присоединения к проекту по коду из модального окна
+        function joinProjectByCode() {
+            const code = document.getElementById('inviteCodeInput').value.trim().toUpperCase();
+            const messageEl = document.getElementById('inviteMessage');
+            
+            if (!code) {
+                messageEl.textContent = 'Введите код приглашения';
+                messageEl.style.color = '#ff5252';
+                return;
+            }
+            
+            const projectEntry = Object.entries(projects).find(([id, project]) => project.inviteCode === code);
+            
+            if (projectEntry) {
+                const [projectId, project] = projectEntry;
+                currentProjectId = projectId;
+                saveData();
+                messageEl.textContent = 'Успешное присоединение к проекту!';
+                messageEl.style.color = '#4caf50';
+                
+                setTimeout(() => {
+                    closeInviteModal();
+                    location.reload();
+                }, 1000);
+            } else {
+                messageEl.textContent = 'Проект с таким кодом не найден';
+                messageEl.style.color = '#ff5252';
+            }
+        }
+
+        // Показ сообщения о отсутствии проекта
+        function showNoProjectMessage() {
+            const homePage = document.getElementById('home-page');
+            const existingMessage = document.getElementById('noProjectMessage');
+            
+            if (!existingMessage) {
+                const messageDiv = document.createElement('div');
+                messageDiv.id = 'noProjectMessage';
+                messageDiv.style.cssText = `
+                    background: #111;
+                    border: 2px solid #ffeb3b;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    text-align: center;
+                    margin: 2rem auto;
+                    max-width: 600px;
+                `;
+                messageDiv.innerHTML = `
+                    <h3>👋 Добро пожаловать в Proekt.top!</h3>
+                    <p style="margin: 1rem 0;">Для начала работы:</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin: 1.5rem 0;">
+                        <button onclick="openRegisterModal()" style="background: #ffeb3b; color: #000; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                            Создать новый проект
+                        </button>
+                        <button onclick="showJoinProjectModal()" style="background: #333; color: #ffeb3b; border: 1px solid #ffeb3b; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                            Присоединиться к проекту
+                        </button>
+                    </div>
+                    <p style="font-size: 0.9rem; opacity: 0.7;">
+                        Попросите ссылку у организатора проекта или создайте свой собственный проект
+                    </p>
+                `;
+                homePage.appendChild(messageDiv);
+            }
+        }
+
+        // Показ модального окна для присоединения к проекту
+        function showJoinProjectModal() {
+            const modal = document.getElementById('inviteModal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function openInviteModal() {
+            document.getElementById('inviteModal').style.display = 'block';
+        }
+
+        function closeInviteModal() {
+            document.getElementById('inviteModal').style.display = 'none';
+            document.getElementById('inviteCodeInput').value = '';
+            document.getElementById('inviteMessage').textContent = '';
+        }
+
+        // Получение текущего проекта
+        function getCurrentProject() {
+            return projects[currentProjectId];
+        }
+
+        // Получение данных текущего проекта
+        function getProjectData() {
+            const project = getCurrentProject();
+            return {
+                users: project?.users || {},
+                statuses: project?.statuses || [],
+                events: project?.events || [],
+                tasks: project?.tasks || [],
+                inviteCode: project?.inviteCode
+            };
+        }
+
+        // Сохранение данных в localStorage
+        function saveData() {
+            localStorage.setItem('proekt_top_projects', JSON.stringify(projects));
+            if (currentProjectId) {
+                localStorage.setItem('proekt_top_currentProjectId', currentProjectId);
+            }
+        }
+
+        // Создание нового проекта
+        function createNewProject(hostEmail, hostName) {
+            const projectId = 'project_' + Date.now();
+            const inviteCode = generateInviteCode();
+            
+            projects[projectId] = {
+                users: {
+                    [hostEmail]: { password: 'host123', role: 'host', name: hostName }
+                },
+                currentUser: { email: hostEmail, role: 'host', name: hostName },
+                statuses: [],
+                events: [],
+                tasks: [],
+                inviteCode: inviteCode
+            };
+            
+            currentProjectId = projectId;
+            saveData();
+            
+            // Убираем сообщение о отсутствии проекта
+            const messageDiv = document.getElementById('noProjectMessage');
+            if (messageDiv) {
+                messageDiv.remove();
+            }
+            
+            return projectId;
+        }
+
+        // Генерация кода приглашения
+        function generateInviteCode() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
+
+        // Обновление пригласительной ссылки в кабинете хоста
+        function updateInviteLink() {
+            const project = getCurrentProject();
+            if (project && project.inviteCode) {
+                const currentUrl = window.location.origin + window.location.pathname;
+                const inviteUrl = `${currentUrl}?invite=${project.inviteCode}`;
+                document.getElementById('inviteLink').value = inviteUrl;
+            }
+        }
+
+        // Навигация по страницам
+        function showPage(pageId) {
+            if (!currentProjectId && pageId !== 'home') {
+                alert('Сначала присоединитесь к проекту или создайте новый');
+                showNoProjectMessage();
+                return;
+            }
+            
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(`${pageId}-page`).classList.add('active');
+            
+            const navBack = document.getElementById('navBack');
+            if (pageId === 'home') {
+                navBack.style.display = 'none';
+            } else {
+                navBack.style.display = 'block';
+            }
+            
+            if (pageId === 'host-cabinet' && currentUser && currentUser.role !== 'host') {
+                alert('Доступ к кабинету хоста разрешен только для пользователей с ролью "Хост"');
+                showPage('home');
+                return;
+            }
+            
+            const protectedPages = ['project-board', 'chat', 'host-cabinet'];
+            if (protectedPages.includes(pageId) && !currentUser) {
+                alert('Для доступа к этой странице необходимо войти в систему');
+                openLoginModal();
+                showPage('home');
+                return;
+            }
+
+            // Обновляем данные при переходе на страницы
+            if (pageId === 'calendar') {
+                updateCalendar();
+            } else if (pageId === 'project-board') {
+                updateProjectBoard();
+                initDragAndDrop();
+            } else if (pageId === 'host-cabinet') {
+                updateHostCabinet();
+            } else if (pageId === 'chat') {
+                updateChat();
+            }
+        }
+
+        // Функции модальных окон
+        function openLoginModal() {
+            closeRegisterModal();
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginMessage').textContent = '';
+        }
+
+        function openRegisterModal() {
+            closeLoginModal();
+            document.getElementById('registerModal').style.display = 'block';
+            selectRole('member');
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+            document.getElementById('registerForm').reset();
+            document.getElementById('registerMessage').textContent = '';
+        }
+
+        function switchToRegister() {
+            closeLoginModal();
+            openRegisterModal();
+        }
+
+        function switchToLogin() {
+            closeRegisterModal();
+            openLoginModal();
+        }
+
+        // Функция для выбора роли
+        function selectRole(role) {
+            document.querySelectorAll('.role-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            const selectedOption = document.querySelector(`.role-option input[value="${role}"]`).closest('.role-option');
+            selectedOption.classList.add('selected');
+            
+            document.getElementById('regRole').value = role;
+            
+            document.querySelectorAll('.role-radio').forEach(radio => {
+                radio.checked = radio.value === role;
+            });
+        }
+
+        function openCreateEventModal() {
+            document.getElementById('createEventModal').style.display = 'block';
+        }
+
+        function closeCreateEventModal() {
+            document.getElementById('createEventModal').style.display = 'none';
+        }
+
+        function openTaskModal() {
+            updateTaskStatusSelect();
+            document.getElementById('taskModal').style.display = 'block';
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
+
+        function openCreateStatusModal() {
+            document.getElementById('createStatusModal').style.display = 'block';
+        }
+
+        function closeCreateStatusModal() {
+            document.getElementById('createStatusModal').style.display = 'none';
+        }
+
+        // Функция для открытия модального окна события
+        function openEventModal(day) {
+            const { events, users } = getProjectData();
+            const dayEvents = events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate.getDate() === day && 
+                       eventDate.getMonth() === currentDate.getMonth() && 
+                       eventDate.getFullYear() === currentDate.getFullYear();
+            });
+
+            if (dayEvents.length > 0) {
+                let eventsHTML = '';
+                dayEvents.forEach(event => {
+                    const eventDate = new Date(event.date);
+                    eventsHTML += `
+                        <div style="margin-bottom: 1rem; padding: 1rem; background: #111; border-radius: 8px; border: 1px solid #ffeb3b;">
+                            <h3>${event.title}</h3>
+                            <p><strong>Описание:</strong> ${event.description}</p>
+                            <p><strong>Время:</strong> ${eventDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                            <p><strong>Создал:</strong> ${users[event.createdBy]?.name || event.createdBy}</p>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('eventDetails').innerHTML = `
+                    <h3>События на ${day} ${getMonthName(currentDate.getMonth())} ${currentDate.getFullYear()}</h3>
+                    ${eventsHTML}
+                `;
+                document.getElementById('eventModal').style.display = 'block';
+            } else {
+                alert('На этот день нет событий');
+            }
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').style.display = 'none';
+        }
+
+        // Вспомогательная функция для получения названия месяца
+        function getMonthName(monthIndex) {
+            const monthNames = ["января", "февраля", "марта", "апреля", "мая", "июня", 
+                               "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+            return monthNames[monthIndex];
+        }
+
+        // Календарь
+        function updateCalendar() {
+            const { events } = getProjectData();
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            document.getElementById('currentMonth').textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            // Заголовки дней недели
+            const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            dayNames.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day-header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Дни месяца
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            
+            // Пустые ячейки перед первым днем
+            for (let i = 0; i < (firstDay.getDay() + 6) % 7; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Дни месяца
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                // Проверяем есть ли события на этот день
+                const hasEvent = events.some(event => {
+                    const eventDate = new Date(event.date);
+                    return eventDate.getDate() === day && 
+                           eventDate.getMonth() === currentDate.getMonth() && 
+                           eventDate.getFullYear() === currentDate.getFullYear();
+                });
+                
+                if (hasEvent) {
+                    dayElement.classList.add('has-event');
+                }
+                
+                dayElement.onclick = () => openEventModal(day);
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            updateCalendar();
+        }
+
+        // Переключение темы календаря
+        function toggleCalendarTheme() {
+            const calendar = document.querySelector('.calendar-container');
+            const button = document.querySelector('.calendar-theme-toggle');
+            
+            if (calendarColorMode === 'color') {
+                calendar.style.filter = 'grayscale(100%)';
+                button.textContent = 'Переключить на цветной';
+                calendarColorMode = 'grayscale';
+            } else {
+                calendar.style.filter = 'grayscale(0%)';
+                button.textContent = 'Переключить на черно-белый';
+                calendarColorMode = 'color';
+            }
+        }
+
+        // Чат
+        function updateChat() {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '';
+            
+            // Добавляем приветственное сообщение
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.className = 'message';
+            welcomeMessage.innerHTML = `
+                <div class="message-header">
+                    <span>💬 Система</span>
+                    <span>${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                </div>
+                <div class="message-text">Добро пожаловать в общий чат проекта!</div>
+            `;
+            messagesContainer.appendChild(welcomeMessage);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            if (input.value.trim() === '') return;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            
+            const userName = currentUser ? currentUser.name : 'Гость';
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span>${userName}</span>
+                    <span>${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                </div>
+                <div class="message-text">${input.value}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            input.value = '';
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Проектная доска
+        function updateProjectBoard() {
+            const { statuses, tasks } = getProjectData();
+            const projectBoard = document.getElementById('projectBoard');
+            projectBoard.innerHTML = '';
+            
+            statuses.forEach(status => {
+                const statusColumn = document.createElement('div');
+                statusColumn.className = 'status-column';
+                statusColumn.style.borderColor = status.color;
+                statusColumn.dataset.status = status.name;
+                
+                const statusHeader = document.createElement('div');
+                statusHeader.className = 'status-header';
+                statusHeader.innerHTML = `<h3>${status.name}</h3>`;
+                
+                statusColumn.appendChild(statusHeader);
+                
+                // Добавляем задачи для этого статуса
+                const statusTasks = tasks.filter(task => task.status === status.name);
+                statusTasks.forEach((task, index) => {
+                    const taskElement = document.createElement('div');
+                    taskElement.className = 'task';
+                    taskElement.draggable = true;
+                    taskElement.dataset.taskIndex = tasks.indexOf(task);
+                    taskElement.innerHTML = `
+                        <h4>${task.title}</h4>
+                        <p>${task.description}</p>
+                        <div class="task-date">Перенесено: ${new Date(task.lastMoved || task.createdAt).toLocaleDateString()}</div>
+                    `;
+                    statusColumn.appendChild(taskElement);
+                });
+                
+                projectBoard.appendChild(statusColumn);
+            });
+        }
+
+        function initDragAndDrop() {
+            const taskElements = document.querySelectorAll('.task');
+            const columns = document.querySelectorAll('.status-column');
+            
+            taskElements.forEach(task => {
+                task.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', task.dataset.taskIndex);
+                    task.classList.add('dragging');
+                });
+                
+                task.addEventListener('dragend', () => {
+                    task.classList.remove('dragging');
+                });
+            });
+            
+            columns.forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    column.style.backgroundColor = '#1a1a1a';
+                });
+                
+                column.addEventListener('dragleave', () => {
+                    column.style.backgroundColor = '';
+                });
+                
+                column.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    column.style.backgroundColor = '';
+                    const taskIndex = e.dataTransfer.getData('text/plain');
+                    const newStatus = column.dataset.status;
+                    
+                    if (taskIndex && newStatus) {
+                        const project = getCurrentProject();
+                        // Обновляем статус задачи
+                        project.tasks[taskIndex].status = newStatus;
+                        project.tasks[taskIndex].lastMoved = new Date().toISOString();
+                        
+                        saveData();
+                        updateProjectBoard();
+                        initDragAndDrop();
+                    }
+                });
+            });
+        }
+
+        function updateTaskStatusSelect() {
+            const { statuses } = getProjectData();
+            const select = document.getElementById('taskStatus');
+            select.innerHTML = '';
+            
+            statuses.forEach(status => {
+                const option = document.createElement('option');
+                option.value = status.name;
+                option.textContent = status.name;
+                select.appendChild(option);
+            });
+        }
+
+        // Кабинет хоста
+        function updateHostCabinet() {
+            updateUserList();
+            updateStatusList();
+            updateInviteLink();
+        }
+
+        function updateUserList() {
+            const { users } = getProjectData();
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            
+            Object.entries(users).forEach(([email, user]) => {
+                if (user.role !== 'host') {
+                    const userCard = document.createElement('div');
+                    userCard.className = 'user-card';
+                    userCard.innerHTML = `
+                        <div class="user-info-line">
+                            <button onclick="removeUser('${email}')">🗑️ Удалить</button>
+                            <span><strong>${user.name}</strong> (${email})</span>
+                            <select class="role-select" onchange="changeUserRole('${email}', this.value)">
+                                <option value="member" ${user.role === 'member' ? 'selected' : ''}>Участник</option>
+                                <option value="moderator" ${user.role === 'moderator' ? 'selected' : ''}>Модератор</option>
+                            </select>
+                        </div>
+                    `;
+                    userList.appendChild(userCard);
+                }
+            });
+        }
+
+        function updateStatusList() {
+            const { statuses } = getProjectData();
+            const statusList = document.getElementById('statusList');
+            statusList.innerHTML = '';
+            
+            statuses.forEach((status, index) => {
+                const statusItem = document.createElement('div');
+                statusItem.className = 'user-card';
+                statusItem.innerHTML = `
+                    <div class="user-info-line">
+                        <span><strong>${status.name}</strong></span>
+                        <button onclick="removeStatus(${index})">Удалить</button>
+                    </div>
+                `;
+                statusList.appendChild(statusItem);
+            });
+        }
+
+        function changeUserRole(email, newRole) {
+            const project = getCurrentProject();
+            project.users[email].role = newRole;
+            saveData();
+            updateHostCabinet();
+        }
+
+        function removeUser(email) {
+            if (confirm(`Вы уверены, что хотите удалить пользователя ${email}?`)) {
+                const project = getCurrentProject();
+                delete project.users[email];
+                saveData();
+                updateHostCabinet();
+            }
+        }
+
+        function removeStatus(index) {
+            if (confirm(`Вы уверены, что хотите удалить статус "${getProjectData().statuses[index].name}"?`)) {
+                const project = getCurrentProject();
+                project.statuses.splice(index, 1);
+                saveData();
+                updateHostCabinet();
+                updateProjectBoard();
+            }
+        }
+
+        function copyInviteLink() {
+            const inviteLink = document.getElementById('inviteLink');
+            inviteLink.select();
+            document.execCommand('copy');
+            alert('Ссылка скопирована в буфер обмена!');
+        }
+
+        // Обработка входа
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentProjectId) {
+                alert('Сначала присоединитесь к проекту');
+                showNoProjectMessage();
+                return;
+            }
+            
+            const project = getCurrentProject();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (project.users[email] && project.users[email].password === password) {
+                currentUser = { 
+                    email, 
+                    role: project.users[email].role,
+                    name: project.users[email].name
+                };
+                project.currentUser = currentUser;
+                document.getElementById('loginMessage').textContent = 'Успешный вход!';
+                document.getElementById('loginMessage').style.color = '#4caf50';
+                
+                updateUIForUser();
+                saveData();
+                
+                setTimeout(() => {
+                    closeLoginModal();
+                }, 1000);
+                
+            } else {
+                document.getElementById('loginMessage').textContent = 'Неверная почта или пароль!';
+                document.getElementById('loginMessage').style.color = '#ff5252';
+            }
+        });
+
+        // Обработка регистрации
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const role = document.getElementById('regRole').value;
+            
+            const messageEl = document.getElementById('registerMessage');
+            
+            if (password !== confirmPassword) {
+                messageEl.textContent = 'Пароли не совпадают!';
+                messageEl.style.color = '#ff5252';
+                return;
+            }
+            
+            let project;
+            if (role === 'host') {
+                // Хост создает новый проект
+                createNewProject(email, name);
+                project = getCurrentProject();
+            } else {
+                // Участник присоединяется к текущему проекту
+                if (!currentProjectId) {
+                    messageEl.textContent = 'Сначала присоединитесь к проекту';
+                    messageEl.style.color = '#ff5252';
+                    showNoProjectMessage();
+                    return;
+                }
+                project = getCurrentProject();
+                
+                if (project.users[email]) {
+                    messageEl.textContent = 'Пользователь с такой почтой уже существует!';
+                    messageEl.style.color = '#ff5252';
+                    return;
+                }
+            }
+            
+            project.users[email] = {
+                password: password,
+                role: role,
+                name: name
+            };
+            
+            messageEl.textContent = 'Регистрация прошла успешно!';
+            messageEl.style.color = '#4caf50';
+            
+            setTimeout(() => {
+                currentUser = { 
+                    email, 
+                    role: role,
+                    name: name
+                };
+                project.currentUser = currentUser;
+                
+                updateUIForUser();
+                saveData();
+                closeRegisterModal();
+                
+                // Убираем сообщение о отсутствии проекта если оно есть
+                const messageDiv = document.getElementById('noProjectMessage');
+                if (messageDiv) {
+                    messageDiv.remove();
+                }
+            }, 1500);
+        });
+
+        // Обработка создания события
+        document.getElementById('createEventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const project = getCurrentProject();
+            const title = document.getElementById('eventTitle').value;
+            const description = document.getElementById('eventDescription').value;
+            const date = document.getElementById('eventDate').value;
+            const time = document.getElementById('eventTime').value;
+            
+            project.events.push({
+                title,
+                description,
+                date: `${date}T${time}`,
+                createdBy: currentUser.email
+            });
+            
+            saveData();
+            updateCalendar();
+            closeCreateEventModal();
+            alert('Событие создано!');
+        });
+
+        // Обработка создания задачи
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const project = getCurrentProject();
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const status = document.getElementById('taskStatus').value;
+            
+            project.tasks.push({
+                title,
+                description,
+                status,
+                createdBy: currentUser.email,
+                createdAt: new Date().toISOString(),
+                lastMoved: new Date().toISOString()
+            });
+            
+            saveData();
+            updateProjectBoard();
+            initDragAndDrop();
+            closeTaskModal();
+            alert('Задача создана!');
+        });
+
+        // Обработка создания статуса
+        document.getElementById('createStatusForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const project = getCurrentProject();
+            const name = document.getElementById('statusName').value;
+            const color = document.getElementById('statusColor').value;
+            
+            project.statuses.push({
+                name,
+                color,
+                createdBy: currentUser.email
+            });
+            
+            saveData();
+            updateHostCabinet();
+            updateProjectBoard();
+            closeCreateStatusModal();
+            alert('Статус создан!');
+        });
+
+        // Обновление интерфейса в зависимости от роли
+        function updateUIForUser() {
+            const authSection = document.getElementById('authSection');
+            const hostCabinetLink = document.getElementById('hostCabinetLink');
+            
+            if (currentUser) {
+                authSection.innerHTML = `
+                    <div class="user-info">
+                        <span>${currentUser.name}</span>
+                        <span class="user-role">${getRoleName(currentUser.role)}</span>
+                        <button onclick="logout()">Выйти</button>
+                    </div>
+                `;
+                
+                if (currentUser.role === 'host') {
+                    hostCabinetLink.style.display = 'block';
+                } else {
+                    hostCabinetLink.style.display = 'none';
+                }
+            } else {
+                authSection.innerHTML = `
+                    <div class="auth-buttons">
+                        <button onclick="openRegisterModal()">Зарегистрироваться</button>
+                        <button onclick="openLoginModal()">Войти</button>
+                    </div>
+                `;
+                hostCabinetLink.style.display = 'none';
+            }
+        }
+
+        // Получение читаемого названия роли
+        function getRoleName(role) {
+            const roleNames = {
+                'host': 'Хост',
+                'moderator': 'Модератор',
+                'member': 'Участник'
+            };
+            return roleNames[role] || role;
+        }
+
+        // Выход из системы
+        function logout() {
+            const project = getCurrentProject();
+            currentUser = null;
+            if (project) {
+                project.currentUser = null;
+            }
+            updateUIForUser();
+            saveData();
+            showPage('home');
+            alert('Вы вышли из системы');
+        }
+
+        // Закрытие модальных окон при клике вне их
+        window.onclick = function(event) {
+            const modals = ['loginModal', 'registerModal', 'createEventModal', 'taskModal', 'createStatusModal', 'eventModal', 'inviteModal'];
+            
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    if (modalId === 'loginModal') closeLoginModal();
+                    if (modalId === 'registerModal') closeRegisterModal();
+                    if (modalId === 'createEventModal') closeCreateEventModal();
+                    if (modalId === 'taskModal') closeTaskModal();
+                    if (modalId === 'createStatusModal') closeCreateStatusModal();
+                    if (modalId === 'eventModal') closeEventModal();
+                    if (modalId === 'inviteModal') closeInviteModal();
+                }
+            });
+        }
+
+        // Обработка нажатия Enter в поле ввода чата
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
