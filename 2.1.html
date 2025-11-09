@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proekt.top - Управление проектами</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #ffeb3b;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #111;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ffeb3b;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffeb3b;
+            cursor: pointer;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .auth-buttons button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-role {
+            background-color: #333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .nav-back {
+            background-color: #111;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #333;
+            display: none;
+        }
+
+        .nav-back button {
+            background-color: transparent;
+            color: #ffeb3b;
+            border: 1px solid #ffeb3b;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .page {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .join-project-container {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .code-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .code-input input {
+            flex: 1;
+            max-width: 200px;
+            padding: 0.8rem;
+            background-color: #111;
+            border: 1px solid #ffeb3b;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .code-input button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .grid-item {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 2rem;
+            color: #ffeb3b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+        }
+
+        .grid-item:hover {
+            background-color: #ffeb3b;
+            color: #000;
+            transform: translateY(-5px);
+        }
+
+        .item-content {
+            text-align: center;
+        }
+
+        .item-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .calendar-container {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-navigation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .calendar-navigation button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            background-color: #222;
+            border: 1px solid #333;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 80px;
+        }
+
+        .calendar-day:hover {
+            background-color: #ffeb3b;
+            color: #000;
+        }
+
+        .calendar-day.has-event {
+            background-color: #333;
+            border-color: #ffeb3b;
+        }
+
+        .calendar-day-header {
+            background-color: #333;
+            font-weight: bold;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .event-indicator {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background-color: #ffeb3b;
+            border-radius: 50%;
+        }
+
+        .project-board {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            min-height: 500px;
+        }
+
+        .status-column {
+            background-color: #111;
+            border: 1px solid #ffeb3b;
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 280px;
+            flex-shrink: 0;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .task {
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: grab;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .task:hover {
+            border-color: #ffeb3b;
+        }
+
+        .task.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .task-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .delete-task-btn {
+            background: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-container {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 1rem;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #000;
+            border-radius: 8px;
+        }
+
+        .message {
+            background-color: #222;
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #ffeb3b;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.8rem;
+            background-color: #111;
+            border: 1px solid #ffeb3b;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .chat-input button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .host-controls {
+            background-color: #111;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-section {
+            margin-bottom: 2rem;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .user-card {
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .user-actions button {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .role-select {
+            background-color: #333;
+            color: #ffeb3b;
+            border: 1px solid #ffeb3b;
+            padding: 0.3rem;
+            border-radius: 4px;
+        }
+
+        .project-code-display {
+            background-color: #222;
+            border: 1px solid #ffeb3b;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .project-code {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #ffeb3b;
+            margin: 1rem 0;
+        }
+
+        .status-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .status-item {
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background-color: #000;
+            margin: 10% auto;
+            padding: 2rem;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            color: #ffeb3b;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #111;
+            border: 1px solid #ffeb3b;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .message {
+            margin-top: 1rem;
+            text-align: center;
+            min-height: 1.5rem;
+        }
+
+        .role-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .role-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-option:hover {
+            background-color: #222;
+            border-color: #ffeb3b;
+        }
+
+        .role-option.selected {
+            background-color: #1a1a1a;
+            border-color: #ffeb3b;
+        }
+
+        .role-radio {
+            margin-right: 1rem;
+        }
+
+        .sync-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ffeb3b;
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        .add-task-btn {
+            background-color: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .events-list {
+            margin-top: 1rem;
+        }
+
+        .event-item {
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .page {
+                padding: 1rem;
+            }
+            
+            .grid-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo" onclick="showPage('home')">Proekt.top</div>
+        <div class="auth-section" id="authSection">
+            <div class="auth-buttons">
+                <button onclick="openRegisterModal()">Зарегистрироваться</button>
+                <button onclick="openLoginModal()">Войти</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="nav-back" id="navBack">
+        <button onclick="showPage('home')">← Назад на главную</button>
+    </div>
+
+    <div class="sync-indicator" id="syncIndicator">🔄 Синхронизация...</div>
+
+    <!-- Страница входа в проект -->
+    <div id="join-project-page" class="page">
+        <div class="join-project-container">
+            <h2>🚪 Войти в проект</h2>
+            <p>Введите код проекта, чтобы присоединиться к команде</p>
+            <div class="code-input">
+                <input type="text" id="projectCodeInput" placeholder="КОД ПРОЕКТА" maxlength="6" style="text-transform: uppercase;">
+                <button onclick="joinProject()">Войти</button>
+            </div>
+            <p id="joinProjectMessage" class="message"></p>
+            <p style="margin-top: 2rem; opacity: 0.7;">
+                Нет кода? <a onclick="openRegisterModal()" style="color: #ffeb3b; cursor: pointer; text-decoration: underline;">создайте свой проект</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Главная страница -->
+    <div id="home-page" class="page">
+        <div class="page-header">
+            <h1>🚀 Мой проект</h1>
+            <p id="projectWelcome">Добро пожаловать в систему управления проектами</p>
+        </div>
+        <div class="grid-container">
+            <div class="grid-item" onclick="showPage('calendar')">
+                <div class="item-content">
+                    <h3>📅 Календарь</h3>
+                    <p>Планируйте задачи и события</p>
+                </div>
+            </div>
+
+            <div class="grid-item" id="hostCabinetLink" style="display: none;" onclick="showPage('host-cabinet')">
+                <div class="item-content">
+                    <h3>👑 Кабинет Хоста</h3>
+                    <p>Управление ролями и проектом</p>
+                </div>
+            </div>
+
+            <div class="grid-item" onclick="showPage('project-board')">
+                <div class="item-content">
+                    <h3>📋 Проектная доска</h3>
+                    <p>Доска задач и статусов</p>
+                </div>
+            </div>
+
+            <div class="grid-item" onclick="showPage('chat')">
+                <div class="item-content">
+                    <h3>💬 Чат</h3>
+                    <p>Общение команды</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница календаря -->
+    <div id="calendar-page" class="page">
+        <div class="page-header">
+            <h1>📅 Календарь</h1>
+            <p>Планируйте задачи и события</p>
+        </div>
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <div class="calendar-navigation">
+                    <button onclick="changeMonth(-1)">← Предыдущий</button>
+                    <h2 id="currentMonth">Март 2024</h2>
+                    <button onclick="changeMonth(1)">Следующий →</button>
+                </div>
+                <button onclick="openCreateEventModal()" id="createEventBtn">+ Создать событие</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+
+    <!-- Страница проектной доски -->
+    <div id="project-board-page" class="page">
+        <div class="page-header">
+            <h1>📋 Проектная доска</h1>
+            <p>Доска задач и статусов</p>
+        </div>
+        <div class="project-board" id="projectBoard"></div>
+        <button onclick="openTaskModal()" class="add-task-btn" id="addTaskBtn">+ Добавить задачу</button>
+    </div>
+
+    <!-- Страница чата -->
+    <div id="chat-page" class="page">
+        <div class="page-header">
+            <h1>💬 Чат</h1>
+            <p>Общение команды</p>
+        </div>
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Введите сообщение...">
+                <button onclick="sendMessage()">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница кабинета хоста -->
+    <div id="host-cabinet-page" class="page">
+        <div class="page-header">
+            <h1>👑 Кабинет Хоста</h1>
+            <p>Управление ролями и проектом</p>
+        </div>
+        <div class="host-controls">
+            <div class="control-section">
+                <h3>Код вашего проекта</h3>
+                <div class="project-code-display">
+                    <p>Поделитесь этим кодом с участниками:</p>
+                    <div class="project-code" id="projectCodeDisplay">XXXXXX</div>
+                    <p class="code-instructions">Участники должны ввести этот код на странице "Войти в проект"</p>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>Управление пользователями</h3>
+                <div class="user-list" id="userList"></div>
+            </div>
+            
+            <div class="control-section">
+                <h3>Управление статусами задач</h3>
+                <button onclick="openCreateStatusModal()">+ Добавить статус</button>
+                <div class="status-list" id="statusList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Вход в Proekt.top</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" placeholder="Почта" required id="loginEmail">
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Пароль" required id="loginPassword">
+                </div>
+                <button type="submit">Войти</button>
+            </form>
+            <p>Нет аккаунта? <a onclick="switchToRegister()" style="color: #ffeb3b; cursor: pointer;">Зарегистрироваться</a></p>
+            <p id="loginMessage" class="message"></p>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Регистрация в Proekt.top</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Имя" required id="regName">
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Почта" required id="regEmail">
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Пароль" required id="regPassword">
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Подтвердите пароль" required id="regConfirmPassword">
+                </div>
+                
+                <div class="form-group">
+                    <label>Выберите роль:</label>
+                    <div class="role-selection">
+                        <div class="role-option" onclick="selectRole('member')">
+                            <input type="radio" name="role" value="member" class="role-radio" id="roleMember" checked>
+                            <div>
+                                <div style="font-weight: bold;">Участник</div>
+                                <div style="font-size: 0.8rem; opacity: 0.7;">Присоединится к существующему проекту</div>
+                            </div>
+                        </div>
+                        <div class="role-option" onclick="selectRole('host')">
+                            <input type="radio" name="role" value="host" class="role-radio" id="roleHost">
+                            <div>
+                                <div style="font-weight: bold;">Хост</div>
+                                <div style="font-size: 0.8rem; opacity: 0.7;">Создаст новый проект</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            <p>Уже есть аккаунт? <a onclick="switchToLogin()" style="color: #ffeb3b; cursor: pointer;">Войти</a></p>
+            <p id="registerMessage" class="message"></p>
+        </div>
+    </div>
+
+    <div id="createEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateEventModal()">&times;</span>
+            <h2>Создать событие</h2>
+            <form id="createEventForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Название события" required id="eventTitle">
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Описание события" rows="3" id="eventDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="date" id="eventDate" required>
+                </div>
+                <button type="submit">Создать событие</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTaskModal()">&times;</span>
+            <h2>Новая задача</h2>
+            <form id="taskForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Название задачи" required id="taskTitle">
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Описание задачи" rows="3" id="taskDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Статус:</label>
+                    <select id="taskStatus" required>
+                        <!-- Статусы будут добавлены динамически -->
+                    </select>
+                </div>
+                <button type="submit">Создать задачу</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="createStatusModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateStatusModal()">&times;</span>
+            <h2>Создать статус</h2>
+            <form id="createStatusForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Название статуса" required id="statusName">
+                </div>
+                <div class="form-group">
+                    <label>Цвет статуса:</label>
+                    <input type="color" id="statusColor" value="#ffeb3b">
+                </div>
+                <button type="submit">Создать статус</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="eventDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEventDetailsModal()">&times;</span>
+            <h2>События дня</h2>
+            <div id="eventDetailsContent">
+                <!-- События будут добавлены динамически -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let projects = JSON.parse(localStorage.getItem('proekt_top_projects')) || {};
+        let currentProjectId = localStorage.getItem('proekt_top_currentProjectId');
+        let currentUser = JSON.parse(localStorage.getItem('proekt_top_currentUser')) || null;
+        let currentDate = new Date();
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSync();
+            updateUIForUser();
+            
+            // ОЧИСТКА ВСЕХ СТАРЫХ ДАННЫХ
+            clearOldProjectData();
+            
+            if (currentUser && currentProjectId) {
+                updateAllInterfaces();
+                showPage('home');
+            } else if (currentUser && !currentProjectId) {
+                showPage('join-project');
+            } else {
+                showPage('home');
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('eventDate').value = today;
+
+            setupEventListeners();
+        });
+
+        // Функция для очистки старых данных проекта
+        function clearOldProjectData() {
+            if (currentProjectId && projects[currentProjectId]) {
+                const project = projects[currentProjectId];
+                
+                // Очищаем все задачи
+                project.tasks = [];
+                
+                // Очищаем все статусы (оставляем только базовые)
+                project.statuses = [
+                    { name: 'Новые', color: '#ffeb3b' },
+                    { name: 'В работе', color: '#2196F3' },
+                    { name: 'Готово', color: '#4CAF50' }
+                ];
+                
+                // Сохраняем изменения
+                saveData();
+                console.log('Все старые задачи и статусы очищены!');
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            document.getElementById('createEventForm').addEventListener('submit', handleCreateEvent);
+            document.getElementById('taskForm').addEventListener('submit', handleCreateTask);
+            document.getElementById('createStatusForm').addEventListener('submit', handleCreateStatus);
+            
+            document.getElementById('chatInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+            
+            document.getElementById('projectCodeInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') joinProject();
+            });
+        }
+
+        // Синхронизация
+        function initializeSync() {
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'proekt_top_projects') {
+                    showSyncIndicator();
+                    const newProjects = JSON.parse(e.newValue);
+                    projects = newProjects;
+                    if (currentProjectId) {
+                        updateAllInterfaces();
+                    }
+                    setTimeout(hideSyncIndicator, 500);
+                }
+            });
+        }
+
+        function showSyncIndicator() {
+            document.getElementById('syncIndicator').style.display = 'block';
+        }
+
+        function hideSyncIndicator() {
+            document.getElementById('syncIndicator').style.display = 'none';
+        }
+
+        function saveData() {
+            localStorage.setItem('proekt_top_projects', JSON.stringify(projects));
+            localStorage.setItem('proekt_top_currentUser', JSON.stringify(currentUser));
+            if (currentProjectId) {
+                localStorage.setItem('proekt_top_currentProjectId', currentProjectId);
+            }
+            window.dispatchEvent(new Event('storage'));
+        }
+
+        // Навигация
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            const targetPage = document.getElementById(`${pageId}-page`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
+            const navBack = document.getElementById('navBack');
+            if (pageId === 'home' || pageId === 'join-project') {
+                navBack.style.display = 'none';
+            } else {
+                navBack.style.display = 'block';
+            }
+
+            updatePageData(pageId);
+        }
+
+        function updatePageData(pageId) {
+            switch(pageId) {
+                case 'calendar':
+                    updateCalendar();
+                    updateCalendarPermissions();
+                    break;
+                case 'project-board':
+                    updateProjectBoard();
+                    updateProjectBoardPermissions();
+                    initDragAndDrop();
+                    break;
+                case 'chat':
+                    updateChat();
+                    break;
+                case 'host-cabinet':
+                    updateHostCabinet();
+                    break;
+                case 'home':
+                    updateProjectWelcome();
+                    break;
+            }
+        }
+
+        function updateAllInterfaces() {
+            updateUIForUser();
+            updateCalendar();
+            updateProjectBoard();
+            updateChat();
+            updateHostCabinet();
+            updateProjectWelcome();
+            updatePermissions();
+        }
+
+        // Обновление прав доступа
+        function updatePermissions() {
+            updateCalendarPermissions();
+            updateProjectBoardPermissions();
+        }
+
+        function updateCalendarPermissions() {
+            const createEventBtn = document.getElementById('createEventBtn');
+            if (createEventBtn) {
+                createEventBtn.style.display = canEditContent() ? 'block' : 'none';
+            }
+        }
+
+        function updateProjectBoardPermissions() {
+            const addTaskBtn = document.getElementById('addTaskBtn');
+            if (addTaskBtn) {
+                addTaskBtn.style.display = canEditContent() ? 'block' : 'none';
+            }
+        }
+
+        function canEditContent() {
+            return currentUser && (currentUser.role === 'host' || currentUser.role === 'moderator');
+        }
+
+        function canDeleteTasks() {
+            return currentUser && (currentUser.role === 'host' || currentUser.role === 'moderator');
+        }
+
+        // Система проектов
+        function generateInviteCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function createNewProject(hostEmail, hostName) {
+            const projectId = 'project_' + Date.now();
+            const inviteCode = generateInviteCode();
+            
+            projects[projectId] = {
+                id: projectId,
+                name: `Проект ${hostName}`,
+                inviteCode: inviteCode,
+                createdAt: new Date().toISOString(),
+                users: {
+                    [hostEmail]: {
+                        email: hostEmail,
+                        name: hostName,
+                        role: 'host',
+                        joinedAt: new Date().toISOString()
+                    }
+                },
+                statuses: [
+                    { name: 'Новые', color: '#ffeb3b' },
+                    { name: 'В работе', color: '#2196F3' },
+                    { name: 'Готово', color: '#4CAF50' }
+                ],
+                events: [],
+                tasks: [], // Пустой массив задач
+                messages: []
+            };
+            
+            currentProjectId = projectId;
+            return projectId;
+        }
+
+        function joinProject() {
+            const code = document.getElementById('projectCodeInput').value.trim().toUpperCase();
+            const messageEl = document.getElementById('joinProjectMessage');
+            
+            if (!code) {
+                showMessage(messageEl, 'Введите код проекта', 'error');
+                return;
+            }
+            
+            const projectEntry = Object.entries(projects).find(([id, project]) => project.inviteCode === code);
+            
+            if (projectEntry) {
+                const [projectId, project] = projectEntry;
+                
+                if (!currentUser) {
+                    showMessage(messageEl, 'Сначала войдите в систему', 'error');
+                    openLoginModal();
+                    return;
+                }
+                
+                if (!project.users[currentUser.email]) {
+                    project.users[currentUser.email] = {
+                        email: currentUser.email,
+                        name: currentUser.name,
+                        role: 'member',
+                        joinedAt: new Date().toISOString()
+                    };
+                }
+                
+                currentProjectId = projectId;
+                currentUser.projectId = projectId;
+                currentUser.role = project.users[currentUser.email].role;
+                
+                saveData();
+                
+                showMessage(messageEl, 'Успешное присоединение к проекту!', 'success');
+                
+                setTimeout(() => {
+                    updateUIForUser();
+                    updateAllInterfaces();
+                    showPage('home');
+                }, 1000);
+                
+            } else {
+                showMessage(messageEl, 'Проект с таким кодом не найден', 'error');
+            }
+        }
+
+        function getCurrentProject() {
+            return projects[currentProjectId];
+        }
+
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.style.color = type === 'success' ? '#4caf50' : '#ff5252';
+        }
+
+        // UI функции
+        function updateUIForUser() {
+            const authSection = document.getElementById('authSection');
+            const hostCabinetLink = document.getElementById('hostCabinetLink');
+            const project = getCurrentProject();
+            
+            if (currentUser && currentProjectId && project) {
+                authSection.innerHTML = `
+                    <div class="user-info">
+                        <span>${currentUser.name}</span>
+                        <span class="user-role">${getRoleName(currentUser.role)}</span>
+                        <button onclick="logout()">Выйти</button>
+                    </div>
+                `;
+                
+                hostCabinetLink.style.display = currentUser.role === 'host' ? 'block' : 'none';
+            } else {
+                authSection.innerHTML = `
+                    <div class="auth-buttons">
+                        <button onclick="openRegisterModal()">Зарегистрироваться</button>
+                        <button onclick="openLoginModal()">Войти</button>
+                    </div>
+                `;
+                hostCabinetLink.style.display = 'none';
+            }
+        }
+
+        function updateProjectWelcome() {
+            const project = getCurrentProject();
+            const welcomeEl = document.getElementById('projectWelcome');
+            if (project) {
+                welcomeEl.textContent = `Проект: ${project.name} | Участников: ${Object.keys(project.users).length}`;
+            } else {
+                welcomeEl.textContent = 'Добро пожаловать в систему управления проектами';
+            }
+        }
+
+        function getRoleName(role) {
+            const roleNames = {
+                'host': '👑 Хост',
+                'moderator': '⚡ Модератор',
+                'member': '👥 Участник'
+            };
+            return roleNames[role] || role;
+        }
+
+        function logout() {
+            currentUser = null;
+            currentProjectId = null;
+            updateUIForUser();
+            saveData();
+            showPage('home');
+        }
+
+        // Функции для выбора роли
+        function selectRole(role) {
+            document.querySelectorAll('.role-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            const selectedOption = document.querySelector(`.role-option input[value="${role}"]`).parentElement;
+            selectedOption.classList.add('selected');
+            
+            document.querySelectorAll('.role-radio').forEach(radio => {
+                radio.checked = radio.value === role;
+            });
+        }
+
+        // Модальные окна
+        function openLoginModal() { 
+            closeRegisterModal(); 
+            document.getElementById('loginModal').style.display = 'block'; 
+        }
+
+        function closeLoginModal() { 
+            document.getElementById('loginModal').style.display = 'none'; 
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginMessage').textContent = '';
+        }
+
+        function openRegisterModal() { 
+            closeLoginModal(); 
+            document.getElementById('registerModal').style.display = 'block'; 
+            selectRole('member');
+        }
+
+        function closeRegisterModal() { 
+            document.getElementById('registerModal').style.display = 'none'; 
+            document.getElementById('registerForm').reset();
+            document.getElementById('registerMessage').textContent = '';
+        }
+
+        function openCreateEventModal() { 
+            if (!canEditContent()) {
+                alert('Только хост и модераторы могут создавать события');
+                return;
+            }
+            document.getElementById('createEventModal').style.display = 'block'; 
+        }
+
+        function closeCreateEventModal() { 
+            document.getElementById('createEventModal').style.display = 'none'; 
+        }
+
+        function openTaskModal() { 
+            if (!canEditContent()) {
+                alert('Только хост и модераторы могут создавать задачи');
+                return;
+            }
+            updateTaskStatusSelect();
+            document.getElementById('taskModal').style.display = 'block'; 
+        }
+
+        function closeTaskModal() { 
+            document.getElementById('taskModal').style.display = 'none'; 
+        }
+
+        function openCreateStatusModal() { 
+            document.getElementById('createStatusModal').style.display = 'block'; 
+        }
+
+        function closeCreateStatusModal() { 
+            document.getElementById('createStatusModal').style.display = 'none'; 
+        }
+
+        function openEventDetailsModal(day) {
+            showEventDetails(day);
+            document.getElementById('eventDetailsModal').style.display = 'block';
+        }
+
+        function closeEventDetailsModal() {
+            document.getElementById('eventDetailsModal').style.display = 'none';
+        }
+
+        function switchToRegister() { 
+            closeLoginModal(); 
+            openRegisterModal(); 
+        }
+
+        function switchToLogin() { 
+            closeRegisterModal(); 
+            openLoginModal(); 
+        }
+
+        // Обработчики форм
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageEl = document.getElementById('loginMessage');
+            
+            if (!email || !password) {
+                showMessage(messageEl, 'Заполните все поля', 'error');
+                return;
+            }
+            
+            let userFound = false;
+            let userRole = 'member';
+            let userProjectId = null;
+            
+            for (const [projectId, project] of Object.entries(projects)) {
+                if (project.users[email]) {
+                    userFound = true;
+                    userRole = project.users[email].role;
+                    userProjectId = projectId;
+                    break;
+                }
+            }
+            
+            if (userFound) {
+                currentUser = { 
+                    email: email, 
+                    name: email.split('@')[0],
+                    role: userRole,
+                    projectId: userProjectId
+                };
+                currentProjectId = userProjectId;
+                
+                showMessage(messageEl, 'Успешный вход!', 'success');
+                
+                setTimeout(() => {
+                    updateUIForUser();
+                    saveData();
+                    closeLoginModal();
+                    updateAllInterfaces();
+                    showPage('home');
+                }, 1000);
+            } else {
+                currentUser = { 
+                    email: email, 
+                    name: email.split('@')[0],
+                    role: 'member'
+                };
+                
+                showMessage(messageEl, 'Успешный вход! Теперь войдите в проект.', 'success');
+                
+                setTimeout(() => {
+                    updateUIForUser();
+                    saveData();
+                    closeLoginModal();
+                    showPage('join-project');
+                }, 1000);
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const messageEl = document.getElementById('registerMessage');
+            
+            if (!name || !email || !password || !confirmPassword) {
+                showMessage(messageEl, 'Заполните все поля', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage(messageEl, 'Пароли не совпадают!', 'error');
+                return;
+            }
+            
+            if (role === 'host') {
+                createNewProject(email, name);
+                currentUser = { 
+                    email: email, 
+                    name: name,
+                    role: 'host'
+                };
+                
+                showMessage(messageEl, 'Проект создан! Перенаправление...', 'success');
+                
+                setTimeout(() => {
+                    updateUIForUser();
+                    saveData();
+                    closeRegisterModal();
+                    updateAllInterfaces();
+                    showPage('home');
+                }, 1500);
+                
+            } else {
+                currentUser = { 
+                    email: email, 
+                    name: name,
+                    role: 'member'
+                };
+                
+                showMessage(messageEl, 'Регистрация прошла успешно!', 'success');
+                
+                setTimeout(() => {
+                    updateUIForUser();
+                    saveData();
+                    closeRegisterModal();
+                    showPage('join-project');
+                }, 1500);
+            }
+        }
+
+        function handleCreateEvent(e) {
+            e.preventDefault();
+            const project = getCurrentProject();
+            const title = document.getElementById('eventTitle').value;
+            const description = document.getElementById('eventDescription').value;
+            const date = document.getElementById('eventDate').value;
+            
+            if (!title || !date) {
+                alert('Заполните все обязательные поля');
+                return;
+            }
+            
+            project.events.push({
+                id: 'event_' + Date.now(),
+                title: title,
+                description: description,
+                date: date,
+                createdBy: currentUser.email,
+                createdAt: new Date().toISOString()
+            });
+            
+            saveData();
+            updateCalendar();
+            closeCreateEventModal();
+            alert('Событие создано!');
+        }
+
+        function handleCreateTask(e) {
+            e.preventDefault();
+            const project = getCurrentProject();
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const status = document.getElementById('taskStatus').value;
+            
+            if (!title || !status) {
+                alert('Заполните все обязательные поля');
+                return;
+            }
+            
+            project.tasks.push({
+                id: 'task_' + Date.now(),
+                title: title,
+                description: description,
+                status: status,
+                createdBy: currentUser.email,
+                createdAt: new Date().toISOString()
+            });
+            
+            saveData();
+            updateProjectBoard();
+            initDragAndDrop();
+            closeTaskModal();
+            alert('Задача создана!');
+        }
+
+        function handleCreateStatus(e) {
+            e.preventDefault();
+            const project = getCurrentProject();
+            const name = document.getElementById('statusName').value;
+            const color = document.getElementById('statusColor').value;
+            
+            if (!name) {
+                alert('Введите название статуса');
+                return;
+            }
+            
+            if (project.statuses.some(status => status.name === name)) {
+                alert('Статус с таким названием уже существует');
+                return;
+            }
+            
+            project.statuses.push({
+                name: name,
+                color: color
+            });
+            
+            saveData();
+            updateHostCabinet();
+            updateProjectBoard();
+            initDragAndDrop();
+            closeCreateStatusModal();
+            alert('Статус создан!');
+        }
+
+        // Календарь
+        function updateCalendar() {
+            const project = getCurrentProject();
+            if (!project) return;
+            
+            const events = project.events || [];
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            document.getElementById('currentMonth').textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            dayNames.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day-header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            
+            for (let i = 0; i < (firstDay.getDay() + 6) % 7; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                const dayEvents = events.filter(event => {
+                    const eventDate = new Date(event.date);
+                    return eventDate.getDate() === day && 
+                           eventDate.getMonth() === currentDate.getMonth() && 
+                           eventDate.getFullYear() === currentDate.getFullYear();
+                });
+                
+                if (dayEvents.length > 0) {
+                    dayElement.classList.add('has-event');
+                    
+                    const eventIndicator = document.createElement('div');
+                    eventIndicator.className = 'event-indicator';
+                    dayElement.appendChild(eventIndicator);
+                }
+                
+                dayElement.onclick = () => openEventDetailsModal(day);
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function showEventDetails(day) {
+            const project = getCurrentProject();
+            if (!project) return;
+            
+            const events = project.events || [];
+            const users = project.users || {};
+            const eventDetailsContent = document.getElementById('eventDetailsContent');
+            
+            const dayEvents = events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate.getDate() === day && 
+                       eventDate.getMonth() === currentDate.getMonth() && 
+                       eventDate.getFullYear() === currentDate.getFullYear();
+            });
+            
+            if (dayEvents.length === 0) {
+                eventDetailsContent.innerHTML = '<p>На этот день нет событий</p>';
+            } else {
+                let eventsHTML = '<div class="events-list">';
+                dayEvents.forEach(event => {
+                    const user = users[event.createdBy];
+                    eventsHTML += `
+                        <div class="event-item">
+                            <h4>${event.title}</h4>
+                            <p>${event.description || 'Нет описания'}</p>
+                            <small>Создал: ${user?.name || event.createdBy}</small>
+                        </div>
+                    `;
+                });
+                eventsHTML += '</div>';
+                eventDetailsContent.innerHTML = eventsHTML;
+            }
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            updateCalendar();
+        }
+
+        // Чат
+        function updateChat() {
+            const project = getCurrentProject();
+            if (!project) return;
+            
+            const messages = project.messages || [];
+            const users = project.users || {};
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '';
+            
+            if (messages.length === 0) {
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'message';
+                welcomeMessage.innerHTML = `
+                    <div class="message-text">Добро пожаловать в общий чат проекта! Начните общение.</div>
+                `;
+                messagesContainer.appendChild(welcomeMessage);
+            } else {
+                messages.forEach(msg => {
+                    const user = users[msg.userEmail];
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message';
+                    messageDiv.innerHTML = `
+                        <div class="message-text">
+                            <strong>${user?.name || msg.userEmail}:</strong> ${msg.text}
+                        </div>
+                    `;
+                    messagesContainer.appendChild(messageDiv);
+                });
+            }
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (text === '' || !currentUser || !currentProjectId) return;
+            
+            const project = getCurrentProject();
+            if (!project.messages) project.messages = [];
+            
+            project.messages.push({
+                userEmail: currentUser.email,
+                text: text,
+                timestamp: new Date().toISOString()
+            });
+            
+            saveData();
+            updateChat();
+            input.value = '';
+        }
+
+        // Проектная доска с перетаскиванием и удалением задач
+        function updateProjectBoard() {
+            const project = getCurrentProject();
+            if (!project) return;
+            
+            const statuses = project.statuses || [];
+            const tasks = project.tasks || [];
+            const projectBoard = document.getElementById('projectBoard');
+            projectBoard.innerHTML = '';
+            
+            statuses.forEach(status => {
+                const statusColumn = document.createElement('div');
+                statusColumn.className = 'status-column';
+                statusColumn.style.borderColor = status.color;
+                statusColumn.dataset.status = status.name;
+                
+                const statusHeader = document.createElement('div');
+                statusHeader.className = 'status-header';
+                statusHeader.innerHTML = `<h3 style="color: ${status.color}">${status.name}</h3>`;
+                
+                statusColumn.appendChild(statusHeader);
+                
+                const statusTasks = tasks.filter(task => task.status === status.name);
+                statusTasks.forEach(task => {
+                    const taskElement = document.createElement('div');
+                    taskElement.className = 'task';
+                    taskElement.draggable = canEditContent();
+                    taskElement.dataset.taskId = task.id;
+                    taskElement.innerHTML = `
+                        ${canDeleteTasks() ? `
+                            <div class="task-actions">
+                                <button class="delete-task-btn" onclick="deleteTask('${task.id}')">×</button>
+                            </div>
+                        ` : ''}
+                        <h4>${task.title}</h4>
+                        <p>${task.description || ''}</p>
+                        <small>Создано: ${new Date(task.createdAt).toLocaleDateString()}</small>
+                    `;
+                    statusColumn.appendChild(taskElement);
+                });
+                
+                projectBoard.appendChild(statusColumn);
+            });
+        }
+
+        function deleteTask(taskId) {
+            if (!canDeleteTasks()) {
+                alert('Только хост и модераторы могут удалять задачи');
+                return;
+            }
+            
+            if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
+                const project = getCurrentProject();
+                if (project) {
+                    project.tasks = project.tasks.filter(task => task.id !== taskId);
+                    saveData();
+                    updateProjectBoard();
+                    initDragAndDrop();
+                    alert('Задача удалена!');
+                }
+            }
+        }
+
+        function initDragAndDrop() {
+            const tasks = document.querySelectorAll('.task');
+            const columns = document.querySelectorAll('.status-column');
+            
+            tasks.forEach(task => {
+                task.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', task.dataset.taskId);
+                    task.classList.add('dragging');
+                });
+                
+                task.addEventListener('dragend', () => {
+                    task.classList.remove('dragging');
+                });
+            });
+            
+            columns.forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    column.style.backgroundColor = 'rgba(255, 235, 59, 0.1)';
+                });
+                
+                column.addEventListener('dragleave', () => {
+                    column.style.backgroundColor = '';
+                });
+                
+                column.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    column.style.backgroundColor = '';
+                    const taskId = e.dataTransfer.getData('text/plain');
+                    const newStatus = column.dataset.status;
+                    
+                    if (taskId && newStatus) {
+                        const project = getCurrentProject();
+                        const task = project.tasks.find(t => t.id === taskId);
+                        if (task) {
+                            task.status = newStatus;
+                            task.lastMoved = new Date().toISOString();
+                            task.movedBy = currentUser.email;
+                            
+                            saveData();
+                            updateProjectBoard();
+                            initDragAndDrop();
+                        }
+                    }
+                });
+            });
+        }
+
+        function updateTaskStatusSelect() {
+            const project = getCurrentProject();
+            if (!project) return;
+            
+            const statusSelect = document.getElementById('taskStatus');
+            statusSelect.innerHTML = '';
+            
+            project.statuses.forEach(status => {
+                const option = document.createElement('option');
+                option.value = status.name;
+                option.textContent = status.name;
+                statusSelect.appendChild(option);
+            });
+        }
+
+        // Кабинет хоста
+        function updateHostCabinet() {
+            updateUserList();
+            updateProjectCode();
+            updateStatusList();
+        }
+
+        function updateUserList() {
+            const project = getCurrentProject();
+            if (!project) return;
+            
+            const users = project.users || {};
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            
+            Object.entries(users).forEach(([email, user]) => {
+                if (user.role !== 'host') {
+                    const userCard = document.createElement('div');
+                    userCard.className = 'user-card';
+                    userCard.innerHTML = `
+                        <div>
+                            <strong>${user.name}</strong> (${email})
+                            <br>
+                            <small>Роль: ${getRoleName(user.role)}</small>
+                        </div>
+                        <div class="user-actions">
+                            <select class="role-select" onchange="changeUserRole('${email}', this.value)">
+                                <option value="member" ${user.role === 'member' ? 'selected' : ''}>Участник</option>
+                                <option value="moderator" ${user.role === 'moderator' ? 'selected' : ''}>Модератор</option>
+                            </select>
+                            <button onclick="removeUser('${email}')">Удалить</button>
+                        </div>
+                    `;
+                    userList.appendChild(userCard);
+                }
+            });
+        }
+
+        function updateStatusList() {
+            const project = getCurrentProject();
+            if (!project) return;
+            
+            const statuses = project.statuses || [];
+            const statusList = document.getElementById('statusList');
+            statusList.innerHTML = '';
+            
+            statuses.forEach((status, index) => {
+                const statusItem = document.createElement('div');
+                statusItem.className = 'status-item';
+                statusItem.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <div class="status-color" style="background-color: ${status.color}"></div>
+                        <strong>${status.name}</strong>
+                    </div>
+                    <button onclick="removeStatus(${index})">Удалить</button>
+                `;
+                statusList.appendChild(statusItem);
+            });
+        }
+
+        function updateProjectCode() {
+            const project = getCurrentProject();
+            if (project && project.inviteCode) {
+                document.getElementById('projectCodeDisplay').textContent = project.inviteCode;
+            }
+        }
+
+        function changeUserRole(email, newRole) {
+            const project = getCurrentProject();
+            if (project && project.users[email]) {
+                project.users[email].role = newRole;
+                
+                if (currentUser && currentUser.email === email) {
+                    currentUser.role = newRole;
+                    updateUIForUser();
+                    updatePermissions();
+                    updateProjectBoard();
+                    initDragAndDrop();
+                }
+                
+                saveData();
+                updateHostCabinet();
+                alert(`Роль пользователя ${email} изменена на "${getRoleName(newRole)}"`);
+            }
+        }
+
+        function removeUser(email) {
+            if (confirm(`Вы уверены, что хотите удалить пользователя ${email} из проекта?`)) {
+                const project = getCurrentProject();
+                if (project && project.users[email]) {
+                    delete project.users[email];
+                    saveData();
+                    updateHostCabinet();
+                    
+                    if (currentUser && currentUser.email === email) {
+                        logout();
+                    }
+                    
+                    alert('Пользователь удален из проекта');
+                }
+            }
+        }
+
+        function removeStatus(index) {
+            const project = getCurrentProject();
+            if (project && project.statuses[index]) {
+                const statusName = project.statuses[index].name;
+                
+                const tasksWithStatus = project.tasks.filter(task => task.status === statusName);
+                if (tasksWithStatus.length > 0) {
+                    alert(`Нельзя удалить статус "${statusName}", так как с ним связаны задачи. Сначала переместите задачи в другие статусы.`);
+                    return;
+                }
+                
+                if (confirm(`Вы уверены, что хотите удалить статус "${statusName}"?`)) {
+                    project.statuses.splice(index, 1);
+                    saveData();
+                    updateHostCabinet();
+                    updateProjectBoard();
+                    initDragAndDrop();
+                    alert('Статус удален');
+                }
+            }
+        }
+
+        // Закрытие модальных окон при клике вне их
+        window.onclick = function(event) {
+            const modals = ['loginModal', 'registerModal', 'createEventModal', 'taskModal', 'createStatusModal', 'eventDetailsModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    if (modalId === 'loginModal') closeLoginModal();
+                    if (modalId === 'registerModal') closeRegisterModal();
+                    if (modalId === 'createEventModal') closeCreateEventModal();
+                    if (modalId === 'taskModal') closeTaskModal();
+                    if (modalId === 'createStatusModal') closeCreateStatusModal();
+                    if (modalId === 'eventDetailsModal') closeEventDetailsModal();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
